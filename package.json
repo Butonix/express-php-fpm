@@ -1,0 +1,10 @@
+{
+  "name": "express-php-fpm",
+  "version": "0.0.1",
+  "description": "Connect php-fpm and Express",
+  "main": "index.js",
+  "author": "pravdomil.cz",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
