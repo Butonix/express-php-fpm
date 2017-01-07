@@ -108,6 +108,8 @@ class Connection {
   }
   
   send(msgType, content) {
+    console.log('Sending ' + FCGI.GetMsgType(msgType))
+    
     const header = FCGI.Header(FCGI.VERSION_1, msgType, this.reqId, content.length, 0)
     this.socket.write(header)
     this.socket.write(content)
@@ -128,17 +130,23 @@ class Connection {
   }
   
   record(record) {
+    switch(record.type) {
+      case FCGI.MSG.END_REQUEST:
+        this.res.end()
+        break
+      
+      case FCGI.MSG.STDOUT:
+        this.stdout(record)
+        break
+        
+      default:
+        console.log('Got ' + FCGI.GetMsgType(record.type))
+    }
+  }
+  
+  stdout(record) {
     const res = this.res
     
-    if(record.type == FCGI.MSG.END_REQUEST) {
-      res.end()
-      return
-    }
-    if(record.type != FCGI.MSG.STDOUT) {
-      console.log(record)
-      console.log(record.content.toString())
-      return
-    }
     if(res.headersSent) {
       res.write(record.content)
     }
