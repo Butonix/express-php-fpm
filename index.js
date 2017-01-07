@@ -23,7 +23,7 @@ class Handler {
       PATH:               '',
       
       REQUEST_METHOD:     req.method,
-      REDIRECT_STATUS:    200,
+      REDIRECT_STATUS:    200, // http://stackoverflow.com/questions/24378472/what-is-php-serverredirect-status
       
       REMOTE_ADDR:        req.connection.remoteAddress,
       REMOTE_PORT:        req.connection.remotePort,
