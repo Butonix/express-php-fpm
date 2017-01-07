@@ -90,6 +90,8 @@ class Connection {
     // send req
     this.send(FCGI.MSG.BEGIN_REQUEST, FCGI.BeginRequestBody(FCGI.ROLE.RESPONDER, 0))
     this.send(FCGI.MSG.PARAMS, FCGI.NameValuePair(env))
+    this.send(FCGI.MSG.PARAMS, Buffer.alloc(0))
+    
     req.on('data', this.reqData.bind(this))
     req.on('end', this.reqEnd.bind(this))
     
