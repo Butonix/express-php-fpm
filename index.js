@@ -17,14 +17,8 @@ class Handler {
     this.opt = opt
   }
   
-  handle(req, res, next) {
-    const sep  = req.url.indexOf('?')
-    const file = (sep == -1) ? req.url : req.url.substr(0, sep)
-    const qs   = (sep == -1) ? ''      : req.url.substr(sep + 1)
-    
-    if(!file.endsWith('.php')) { next(); return }
-    
-    const args = {
+  createEnviroment(req, file, qs) {
+    const env = {
       GATEWAY_INTERFACE:  'CGI/1.1',
       PATH:               '',
       
@@ -63,12 +57,22 @@ class Handler {
     }
     
     for(const key of Object.keys(req.headers)) {
-      args['HTTP_' + key.toUpperCase()] = req.headers[key]
+      env['HTTP_' + key.toUpperCase()] = req.headers[key]
     }
     
-    const post = new Buffer(8)
+    return env
+  }
+  
+  handle(req, res, next) {
+    const sep  = req.url.indexOf('?')
+    const file = (sep == -1) ? req.url : req.url.substr(0, sep)
+    const qs   = (sep == -1) ? ''      : req.url.substr(sep + 1)
     
-    const conn = new Connection(this.opt, 1, args, post, res)
+    if(!file.endsWith('.php')) { next(); return }
+    
+    const env = this.createEnviroment(req, file, qs)
+    
+    new Connection(this.opt, 1, env, req, res)
   }
 }
 
