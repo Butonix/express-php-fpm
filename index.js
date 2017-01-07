@@ -57,7 +57,7 @@ class Handler {
     }
     
     for(const key of Object.keys(req.headers)) {
-      env['HTTP_' + key.toUpperCase()] = req.headers[key]
+      env['HTTP_' + key.toUpperCase().replace(/-/g, '_')] = req.headers[key]
     }
     
     return env
