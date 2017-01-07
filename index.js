@@ -77,7 +77,7 @@ class Handler {
 }
 
 class Connection {
-  constructor(opt, reqId, args, post, res) {
+  constructor(opt, reqId, env, req, res) {
     // locals
     this.reqId = reqId
     this.res = res
@@ -89,11 +89,20 @@ class Connection {
     
     // send req
     this.send(FCGI.MSG.BEGIN_REQUEST, FCGI.BeginRequestBody(FCGI.ROLE.RESPONDER, 0))
-    this.send(FCGI.MSG.PARAMS, FCGI.NameValuePair(args))
-    this.send(FCGI.MSG.STDIN, post)
+    this.send(FCGI.MSG.PARAMS, FCGI.NameValuePair(env))
+    req.on('data', this.reqData.bind(this))
+    req.on('end', this.reqEnd.bind(this))
     
     // data buffer
     this.buffer = Buffer.alloc(0)
+  }
+  
+  reqData(chunk) {
+    this.send(FCGI.MSG.STDIN, chunk)
+  }
+  
+  reqEnd() {
+    this.send(FCGI.MSG.STDIN, Buffer.alloc(0))
   }
   
   send(msgType, content) {
