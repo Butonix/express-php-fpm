@@ -150,7 +150,7 @@ class Connection {
       const body = content.slice(sep + 4)
     
       const headers = head.toString().split('\r\n')
-      for(let h of headers) {
+      for(const h of headers) {
         const hsep = h.indexOf(':')
         const hkey = h.substr(0, hsep)
         const hval = h.substr(hsep + 2)
