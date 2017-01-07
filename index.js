@@ -93,7 +93,7 @@ class Connection {
   }
   
   send(msgType, content) {
-    const header = FCGI.Record(FCGI.VERSION_1, msgType, this.reqId, content.length, 0)
+    const header = FCGI.Header(FCGI.VERSION_1, msgType, this.reqId, content.length, 0)
     this.socket.write(header)
     this.socket.write(content)
   }
