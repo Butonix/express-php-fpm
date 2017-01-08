@@ -62,7 +62,7 @@ class Responder {
     
     // socket
     this.socket = net.connect(handler.opt.socketOptions)
-    this.socket.on('data', this.data.bind(this))
+    this.socket.on('data', this.onData.bind(this))
     this.socket.on('close', this.onClose.bind(this))
     this.socket.on('error', this.onError.bind(this))
     
@@ -105,7 +105,7 @@ class Responder {
     }
   }
   
-  data(data) {
+  onData(data) {
     this.buffer = Buffer.concat([ this.buffer, data ])
     
     while(this.buffer.length) {
