@@ -116,3 +116,15 @@ FCGI.NameValuePair = function(name, value) {
   return buff
 }
 
+FCGI.ParseEndRequest = function(buff) {
+  if(!(buff instanceof Buffer)) { throw new TypeError('ParseEndRequest accepts only buffers') }
+  
+  const appStatus      = buff[0] << 24 |  // unsigned char appStatusB3
+                         buff[1] << 16 |  // unsigned char appStatusB2
+                         buff[2] << 8  |  // unsigned char appStatusB1
+                         buff[3]          // unsigned char appStatusB0
+  const protocolStatus = buff[4]          // unsigned char protocolStatus
+                                          // unsigned char reserved[3]
+  
+  return { appStatus, protocolStatus }
+}
