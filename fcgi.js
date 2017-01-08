@@ -42,6 +42,7 @@ FCGI.Header = function(version, type, requestId, contentLength, paddingLength) {
 
 FCGI.ParseHeader = function(buff) {
   if(!(buff instanceof Buffer)) { throw new TypeError('ParseHeader accepts only buffers') }
+  if(buff.length < 8) { return null }
   
   const version       = buff[0]
   const type          = buff[1]
