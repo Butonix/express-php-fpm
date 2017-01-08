@@ -1,7 +1,7 @@
 {
   "name": "express-php-fpm",
   "version": "0.0.1",
-  "description": "Connect php-fpm and Express",
+  "description": "Express middleware for php-fpm",
   "main": "index.js",
   "author": "pravdomil.cz",
   "dependencies": {
