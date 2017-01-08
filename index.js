@@ -162,7 +162,7 @@ class Connection {
       const hval = h.substr(hsep + 2)
       
       if(hkey == "Status") {
-        this.res.status(hval.substr(0, 3))
+        this.res.status(parseInt(hval.substr(0, 3)))
         continue
       }
       if(!(hkey in headers)) { headers[hkey] = [] }
