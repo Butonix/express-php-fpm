@@ -20,54 +20,6 @@ class Handler {
     this.connections = new Array(100)
   }
   
-  createEnviroment(req, file, qs) {
-    const env = {
-      GATEWAY_INTERFACE:  'CGI/1.1',
-      PATH:               '',
-      
-      REQUEST_METHOD:     req.method,
-      REDIRECT_STATUS:    200, // http://stackoverflow.com/questions/24378472/what-is-php-serverredirect-status
-      
-      REMOTE_ADDR:        req.connection.remoteAddress,
-      REMOTE_PORT:        req.connection.remotePort,
-      
-      SERVER_PROTOCOL:    req.protocol.toUpperCase() + '/' + req.httpVersion,
-      SERVER_ADDR:        req.connection.localAddress,
-      SERVER_PORT:        req.connection.localPort,
-      
-      SERVER_SOFTWARE:    'express-php-fpm',
-      SERVER_NAME:        '',
-      SERVER_ADMIN:       '',
-      SERVER_SIGNATURE:   '',
-      
-      DOCUMENT_ROOT:      this.opt.documentRoot,
-      SCRIPT_FILENAME:    this.opt.documentRoot + file,
-      SCRIPT_NAME:        file,
-      
-      REQUEST_URI:        req.url,
-      QUERY_STRING:       qs,
-      
-      CONTENT_TYPE:       req.headers['content-type'] || '',
-      CONTENT_LENGTH:     req.headers['content-length'] || '',
-      
-      // AUTH_TYPE
-      // PATH_INFO
-      // PATH_TRANSLATED
-      // REMOTE_HOST
-      // REMOTE_IDENT
-      // REMOTE_USER
-      // UNIQUE_ID
-    }
-    
-    for(const key of Object.keys(req.headers)) {
-      env['HTTP_' + key.toUpperCase().replace(/-/g, '_')] = req.headers[key]
-    }
-    
-    Object.assign(env, this.opt.env)
-    
-    return env
-  }
-  
   handle(req, res, next) {
     const sep  = req.url.indexOf('?')
     let file = (sep == -1) ? req.url : req.url.substr(0, sep)
@@ -77,7 +29,7 @@ class Handler {
     if(!file.endsWith('.php')) { next(); return }
     
     debug('handle %s', file)
-    const env = this.createEnviroment(req, file, qs)
+    const env = createEnviroment(req, this.opt.documentRoot, file, qs, this.opt.env)
     const reqId = this.getFreeReqId()
     const onClose = () => { this.freeUpReqId(reqId) }
     new Responder(this.opt.socketOptions, reqId, env, req, res, onClose)
@@ -198,4 +150,52 @@ class Responder {
     this.res.set(headers)
     this.res.write(body)
   }
+}
+
+function createEnviroment(req, documentRoot, file, qs, extraEnv) {
+  const env = {
+    GATEWAY_INTERFACE:  'CGI/1.1',
+    PATH:               '',
+    
+    REQUEST_METHOD:     req.method,
+    REDIRECT_STATUS:    200, // http://stackoverflow.com/questions/24378472/what-is-php-serverredirect-status
+    
+    REMOTE_ADDR:        req.connection.remoteAddress,
+    REMOTE_PORT:        req.connection.remotePort,
+    
+    SERVER_PROTOCOL:    req.protocol.toUpperCase() + '/' + req.httpVersion,
+    SERVER_ADDR:        req.connection.localAddress,
+    SERVER_PORT:        req.connection.localPort,
+    
+    SERVER_SOFTWARE:    'express-php-fpm',
+    SERVER_NAME:        '',
+    SERVER_ADMIN:       '',
+    SERVER_SIGNATURE:   '',
+    
+    DOCUMENT_ROOT:      documentRoot,
+    SCRIPT_FILENAME:    documentRoot + file,
+    SCRIPT_NAME:        file,
+    
+    REQUEST_URI:        req.url,
+    QUERY_STRING:       qs,
+    
+    CONTENT_TYPE:       req.headers['content-type'] || '',
+    CONTENT_LENGTH:     req.headers['content-length'] || '',
+    
+    // AUTH_TYPE
+    // PATH_INFO
+    // PATH_TRANSLATED
+    // REMOTE_HOST
+    // REMOTE_IDENT
+    // REMOTE_USER
+    // UNIQUE_ID
+  }
+  
+  for(const key of Object.keys(req.headers)) {
+    env['HTTP_' + key.toUpperCase().replace(/-/g, '_')] = req.headers[key]
+  }
+  
+  Object.assign(env, extraEnv)
+  
+  return env
 }
