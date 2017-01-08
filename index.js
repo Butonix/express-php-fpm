@@ -62,6 +62,8 @@ class Handler {
       env['HTTP_' + key.toUpperCase().replace(/-/g, '_')] = req.headers[key]
     }
     
+    Object.assign(env, this.opt.env)
+    
     return env
   }
   
