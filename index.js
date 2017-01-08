@@ -12,12 +12,14 @@ function init(opt) {
 class Handler {
   constructor(opt) {
     debug('new Router')
-    this.router = express.Router()
-    this.router.use(this.handle.bind(this))
-    this.router.use(express.static(opt.documentRoot))
     
+    // locals
     this.opt = opt
     this.connections = new Array(100)
+    this.router = express.Router()
+    
+    this.router.use(this.handle.bind(this))
+    this.router.use(express.static(opt.documentRoot))
   }
   
   handle(req, res, next) {
