@@ -53,7 +53,7 @@ class Responder {
     this.handler = handler
     this.res = res
     this.next = next
-    this.reqId = this.handler.getFreeReqId()
+    this.reqId = handler.getFreeReqId()
     this.buffer = Buffer.alloc(0)
     this.gotHead = false
     
@@ -61,13 +61,13 @@ class Responder {
     debug('new Responder %i for %s', this.reqId, file)
     
     // socket
-    this.socket = net.connect(this.handler.opt.socketOptions)
+    this.socket = net.connect(handler.opt.socketOptions)
     this.socket.on('data', this.data.bind(this))
     this.socket.on('close', this.onClose.bind(this))
     this.socket.on('error', this.onError.bind(this))
     
     // send req
-    const env = createEnviroment(this.handler.opt.documentRoot, file, req, this.handler.opt.env)
+    const env = createEnviroment(handler.opt.documentRoot, file, req, handler.opt.env)
     this.send(FCGI.MSG.BEGIN_REQUEST, FCGI.BeginRequestBody(FCGI.ROLE.RESPONDER, FCGI.DONT_KEEP_CONN))
     this.send(FCGI.MSG.PARAMS, FCGI.NameValuePair(env))
     this.send(FCGI.MSG.PARAMS, Buffer.alloc(0))
