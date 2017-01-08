@@ -77,13 +77,13 @@ class Handler {
     
     debug('handle %s', file)
     const env = this.createEnviroment(req, file, qs)
-    new Connection(this.opt.socketOptions, 1, env, req, res)
+    new Responder(this.opt.socketOptions, 1, env, req, res)
   }
 }
 
-class Connection {
+class Responder {
   constructor(socketOptions, reqId, env, req, res) {
-    debug('new Connection')
+    debug('new Responder')
     
     // locals
     this.reqId = reqId
