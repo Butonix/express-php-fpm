@@ -93,7 +93,7 @@ class Connection {
     this.socket.on('data', this.data.bind(this))
     
     // send req
-    this.send(FCGI.MSG.BEGIN_REQUEST, FCGI.BeginRequestBody(FCGI.ROLE.RESPONDER, 0))
+    this.send(FCGI.MSG.BEGIN_REQUEST, FCGI.BeginRequestBody(FCGI.ROLE.RESPONDER, FCGI.DONT_KEEP_CONN))
     this.send(FCGI.MSG.PARAMS, FCGI.NameValuePair(env))
     this.send(FCGI.MSG.PARAMS, Buffer.alloc(0))
     req.on('data', this.reqData.bind(this))
