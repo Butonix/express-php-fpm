@@ -21,18 +21,11 @@ class Handler {
   }
   
   handle(req, res, next) {
-    const sep  = req.url.indexOf('?')
-    let file = (sep == -1) ? req.url : req.url.substr(0, sep)
-    let qs   = (sep == -1) ? ''      : req.url.substr(sep + 1)
-    
+    let file = this.withoutQueryString(req.url)
     if(file.endsWith('/')) { file += 'index.php' }
     if(!file.endsWith('.php')) { next(); return }
     
-    debug('handle %s', file)
-    const env = createEnviroment(req, this.opt.documentRoot, file, qs, this.opt.env)
-    const reqId = this.getFreeReqId()
-    const onClose = () => { this.freeUpReqId(reqId) }
-    new Responder(this.opt.socketOptions, reqId, env, req, res, onClose)
+    new Responder(this, file, req, res, next)
   }
   
   getFreeReqId() {
@@ -44,6 +37,11 @@ class Handler {
   
   freeUpReqId(reqId) {
     this.connections[reqId] = false
+  }
+  
+  withoutQueryString(url) {
+    const sep = url.indexOf('?')
+    return (sep == -1) ? url : url.substr(0, sep)
   }
 }
 
