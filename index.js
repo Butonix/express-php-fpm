@@ -85,9 +85,8 @@ class Connection {
     // locals
     this.reqId = reqId
     this.res = res
-    
-    // data buffer
     this.buffer = Buffer.alloc(0)
+    this.gotHead = false
     
     // socket
     this.socket = net.connect(opt.connectOptions)
@@ -140,37 +139,37 @@ class Connection {
         break
       
       case FCGI.MSG.STDOUT:
-        this.stdout(record)
+        this.stdout(record.content)
         break
     }
   }
   
-  stdout(record) {
-    const res = this.res
-    
-    if(res.headersSent) {
-      res.write(record.content)
+  stdout(content) {
+    if(this.gotHead) {
+      this.res.write(content)
+      return
     }
-    else {
-      const content = record.content
+    this.gotHead = true
+    
+    const sep = content.indexOf('\r\n\r\n')
+    const head = content.slice(0, sep)
+    const body = content.slice(sep + 4)
+    
+    const headers = {}
+    for(const h of head.toString().split('\r\n')) {
+      const hsep = h.indexOf(':')
+      const hkey = h.substr(0, hsep)
+      const hval = h.substr(hsep + 2)
       
-      const sep = content.indexOf('\r\n\r\n')
-      const head = content.slice(0, sep)
-      const body = content.slice(sep + 4)
-    
-      const headers = head.toString().split('\r\n')
-      for(const h of headers) {
-        const hsep = h.indexOf(':')
-        const hkey = h.substr(0, hsep)
-        const hval = h.substr(hsep + 2)
-        if(hkey == "Status") {
-          res.status(hval.substr(0, 3))
-        }
-        else {
-          res.set(hkey, hval)
-        }
+      if(hkey == "Status") {
+        this.res.status(hval.substr(0, 3))
+        continue
       }
-      res.write(body)
+      if(!(hkey in headers)) { headers[hkey] = [] }
+      headers[hkey].push(hval)
     }
+    
+    this.res.set(headers)
+    this.res.write(body)
   }
 }
