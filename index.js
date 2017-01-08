@@ -58,7 +58,8 @@ class Responder {
     // socket
     this.socket = net.connect(socketOptions)
     this.socket.on('data', this.data.bind(this))
-    this.socket.on('close', onClose)
+    this.socket.on('close', this.onClose.bind(this))
+    this.socket.on('error', this.onError.bind(this))
     
     // send req
     const env = createEnviroment(this.handler.opt.documentRoot, file, req, this.handler.opt.env)
@@ -75,6 +76,17 @@ class Responder {
   
   reqEnd() {
     this.send(FCGI.MSG.STDIN, Buffer.alloc(0))
+  }
+  
+  onClose(hadError) {
+    this.handler.freeUpReqId(this.reqId)
+    if(hadError && !this.gotHead) {
+      this.onError(new Error('Couldn\'t connect to php-fpm server'))
+    }
+  }
+  
+  onError(e) {
+    this.next(e)
   }
   
   send(msgType, content) {
