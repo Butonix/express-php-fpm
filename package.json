@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": "pravdomil.cz",
   "dependencies": {
+    "debug": "^2.6.0",
     "express": "^4.14.0"
   }
 }

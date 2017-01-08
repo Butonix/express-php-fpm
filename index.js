@@ -1,6 +1,7 @@
 const express = require('express')
 const FCGI = require('./node-fcgi')
 const net = require('net')
+const debug = require('debug')('express-php-fpm')
 
 module.exports = init
 
@@ -10,6 +11,7 @@ function init(opt) {
 
 class Handler {
   constructor(opt) {
+    debug('new Router')
     this.router = express.Router()
     this.router.use(this.handle.bind(this))
     this.router.use(express.static(opt.documentRoot))
@@ -70,6 +72,7 @@ class Handler {
     
     if(!file.endsWith('.php')) { next(); return }
     
+    debug('handle %s', file)
     const env = this.createEnviroment(req, file, qs)
     
     new Connection(this.opt, 1, env, req, res)
@@ -78,6 +81,8 @@ class Handler {
 
 class Connection {
   constructor(opt, reqId, env, req, res) {
+    debug('new Connection')
+    
     // locals
     this.reqId = reqId
     this.res = res
@@ -108,8 +113,7 @@ class Connection {
   }
   
   send(msgType, content) {
-    console.log('Sending ' + FCGI.GetMsgType(msgType))
-    
+    debug('send ' + FCGI.GetMsgType(msgType))
     const header = FCGI.Header(FCGI.VERSION_1, msgType, this.reqId, content.length, 0)
     this.socket.write(header)
     this.socket.write(content)
@@ -130,6 +134,8 @@ class Connection {
   }
   
   record(record) {
+    debug('got ' + FCGI.GetMsgType(record.type))
+    
     switch(record.type) {
       case FCGI.MSG.END_REQUEST:
         this.res.end()
