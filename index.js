@@ -1,5 +1,5 @@
 const express = require('express')
-const FCGI = require('./node-fcgi')
+const FCGI = require('./fcgi')
 const net = require('net')
 const debug = require('debug')('express-php-fpm')
 
