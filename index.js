@@ -76,12 +76,12 @@ class Handler {
     
     debug('handle %s', file)
     const env = this.createEnviroment(req, file, qs)
-    new Connection(this.opt, 1, env, req, res)
+    new Connection(this.opt.socketOptions, 1, env, req, res)
   }
 }
 
 class Connection {
-  constructor(opt, reqId, env, req, res) {
+  constructor(socketOptions, reqId, env, req, res) {
     debug('new Connection')
     
     // locals
@@ -91,7 +91,7 @@ class Connection {
     this.gotHead = false
     
     // socket
-    this.socket = net.connect(opt.connectOptions)
+    this.socket = net.connect(socketOptions)
     this.socket.on('data', this.data.bind(this))
     
     // send req
