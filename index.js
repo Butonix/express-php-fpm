@@ -83,7 +83,7 @@ class Handler {
 
 class Responder {
   constructor(socketOptions, reqId, env, req, res) {
-    debug('new Responder')
+    debug('new Responder reqId %i', reqId)
     
     // locals
     this.reqId = reqId
