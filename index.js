@@ -17,6 +17,7 @@ class Handler {
     this.router.use(express.static(opt.documentRoot))
     
     this.opt = opt
+    this.connections = new Array(100)
   }
   
   createEnviroment(req, file, qs) {
@@ -77,12 +78,25 @@ class Handler {
     
     debug('handle %s', file)
     const env = this.createEnviroment(req, file, qs)
-    new Responder(this.opt.socketOptions, 1, env, req, res)
+    const reqId = this.getFreeReqId()
+    const onClose = () => { this.freeUpReqId(reqId) }
+    new Responder(this.opt.socketOptions, reqId, env, req, res, onClose)
+  }
+  
+  getFreeReqId() {
+    let i = 0
+    while(this.connections[++i]) { }
+    this.connections[i] = true
+    return i
+  }
+  
+  freeUpReqId(reqId) {
+    this.connections[reqId] = false
   }
 }
 
 class Responder {
-  constructor(socketOptions, reqId, env, req, res) {
+  constructor(socketOptions, reqId, env, req, res, onClose) {
     debug('new Responder reqId %i', reqId)
     
     // locals
@@ -94,6 +108,7 @@ class Responder {
     // socket
     this.socket = net.connect(socketOptions)
     this.socket.on('data', this.data.bind(this))
+    this.socket.on('close', onClose)
     
     // send req
     this.send(FCGI.MSG.BEGIN_REQUEST, FCGI.BeginRequestBody(FCGI.ROLE.RESPONDER, FCGI.DONT_KEEP_CONN))
