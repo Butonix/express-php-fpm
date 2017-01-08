@@ -1,6 +1,6 @@
 const express = require('express')
-const FCGI = require('./fcgi')
 const net = require('net')
+const FCGI = require('./fcgi')
 const debug = require('debug')('express-php-fpm')
 
 module.exports = init
