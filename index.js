@@ -74,7 +74,6 @@ class Handler {
     
     debug('handle %s', file)
     const env = this.createEnviroment(req, file, qs)
-    
     new Connection(this.opt, 1, env, req, res)
   }
 }
