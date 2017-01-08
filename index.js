@@ -61,6 +61,7 @@ class Responder {
     this.socket.on('close', onClose)
     
     // send req
+    const env = createEnviroment(this.handler.opt.documentRoot, file, req, this.handler.opt.env)
     this.send(FCGI.MSG.BEGIN_REQUEST, FCGI.BeginRequestBody(FCGI.ROLE.RESPONDER, FCGI.DONT_KEEP_CONN))
     this.send(FCGI.MSG.PARAMS, FCGI.NameValuePair(env))
     this.send(FCGI.MSG.PARAMS, Buffer.alloc(0))
@@ -150,7 +151,10 @@ class Responder {
   }
 }
 
-function createEnviroment(req, documentRoot, file, qs, extraEnv) {
+function createEnviroment(documentRoot, file, req, extraEnv) {
+  const sep = req.url.indexOf('?')
+  const qs = (sep == -1) ? '' : req.url.substr(sep + 1)
+  
   const env = {
     GATEWAY_INTERFACE:  'CGI/1.1',
     PATH:               '',
