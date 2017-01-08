@@ -141,6 +141,9 @@ class Connection {
       case FCGI.MSG.STDOUT:
         this.stdout(record.content)
         break
+      
+      case FCGI.MSG.STDERR:
+        break
     }
   }
   
