@@ -113,9 +113,13 @@ class Connection {
   
   send(msgType, content) {
     debug('send %s', FCGI.GetMsgType(msgType))
-    const header = FCGI.Header(FCGI.VERSION_1, msgType, this.reqId, content.length, 0)
-    this.socket.write(header)
-    this.socket.write(content)
+    
+    for(let offset = 0; offset < content.length || offset == 0; offset += 0xFFFF) {
+      const chunk = content.slice(offset, offset + 0xFFFF)
+      const header = FCGI.Header(FCGI.VERSION_1, msgType, this.reqId, chunk.length, 0)
+      this.socket.write(header)
+      this.socket.write(chunk)
+    }
   }
   
   data(data) {
