@@ -104,20 +104,10 @@ class Responder {
     debug('got %s', FCGI.GetMsgType(record.type))
     
     switch(record.type) {
-      case FCGI.MSG.STDERR:
-        break
-      
-      case FCGI.MSG.STDOUT:
-        this.stdout(record.content)
-        break
-      
-      case FCGI.MSG.END_REQUEST:
-        this.res.end()
-        break
-      
-      case FCGI.MSG.GET_VALUES_RESULT:
-        break
-      
+      case FCGI.MSG.STDERR: break
+      case FCGI.MSG.STDOUT: this.stdout(record.content); break
+      case FCGI.MSG.END_REQUEST: this.res.end(); break
+      case FCGI.MSG.GET_VALUES_RESULT: break
     }
   }
   
