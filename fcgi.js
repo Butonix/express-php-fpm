@@ -116,30 +116,3 @@ FCGI.NameValuePair = function(name, value) {
   return buff
 }
 
-/*
-
-typedef struct {
-  FCGI_Header header
-  FCGI_EndRequestBody body
-} FCGI_EndRequestRecord
-
-typedef struct {
-  unsigned char appStatusB3
-  unsigned char appStatusB2
-  unsigned char appStatusB1
-  unsigned char appStatusB0
-  unsigned char protocolStatus
-  unsigned char reserved[3]
-} FCGI_EndRequestBody
-
-typedef struct {
-  FCGI_Header header
-  FCGI_UnknownTypeBody body
-} FCGI_UnknownTypeRecord
-
-typedef struct {
-  unsigned char type    
-  unsigned char reserved[7]
-} FCGI_UnknownTypeBody
-
-*/
