@@ -145,6 +145,9 @@ class Connection {
         this.res.end()
         break
       
+      case FCGI.MSG.GET_VALUES_RESULT:
+        break
+      
     }
   }
   
