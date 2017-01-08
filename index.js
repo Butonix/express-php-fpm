@@ -46,17 +46,20 @@ class Handler {
 }
 
 class Responder {
-  constructor(socketOptions, reqId, env, req, res, onClose) {
-    debug('new Responder reqId %i', reqId)
-    
+  constructor(handler, file, req, res, next) {
     // locals
-    this.reqId = reqId
+    this.handler = handler
     this.res = res
+    this.next = next
+    this.reqId = this.handler.getFreeReqId()
     this.buffer = Buffer.alloc(0)
     this.gotHead = false
     
+    // debug
+    debug('new Responder %i for %s', this.reqId, file)
+    
     // socket
-    this.socket = net.connect(socketOptions)
+    this.socket = net.connect(this.handler.opt.socketOptions)
     this.socket.on('data', this.data.bind(this))
     this.socket.on('close', this.onClose.bind(this))
     this.socket.on('error', this.onError.bind(this))
