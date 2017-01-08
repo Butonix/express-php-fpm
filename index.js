@@ -86,6 +86,9 @@ class Connection {
     this.reqId = reqId
     this.res = res
     
+    // data buffer
+    this.buffer = Buffer.alloc(0)
+    
     // socket
     this.socket = net.connect(opt.connectOptions)
     this.socket.on('data', this.data.bind(this))
@@ -97,9 +100,6 @@ class Connection {
     
     req.on('data', this.reqData.bind(this))
     req.on('end', this.reqEnd.bind(this))
-    
-    // data buffer
-    this.buffer = Buffer.alloc(0)
   }
   
   reqData(chunk) {
