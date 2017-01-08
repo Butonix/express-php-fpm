@@ -9,8 +9,8 @@ It's working seamlessly with WordPress, Joomla, Drupal!
 [What is php-fpm?](http://fastjoomlahost.com/mod_php-fastcgi-php-fpm-server)
 [Why php-fpm?](http://serverfault.com/a/645765/393463)
 How to install php-fpm on
-[Windows](http://stackoverflow.com/questions/4539670/php-fpm-for-windows)
-[Mac](https://developerjack.com/blog/2016/08/26/Installing-PHP71-with-homebrew/)
+[Windows](http://stackoverflow.com/questions/4539670/php-fpm-for-windows),
+[Mac](https://developerjack.com/blog/2016/08/26/Installing-PHP71-with-homebrew/),
 [Linux](https://www.google.com/search?q=how+to+install+php-fpm+on+linux)?
 
 ## Usage & Example
