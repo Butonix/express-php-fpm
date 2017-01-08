@@ -142,9 +142,6 @@ class Connection {
       case FCGI.MSG.STDOUT:
         this.stdout(record)
         break
-        
-      default:
-        console.log('Got ' + FCGI.GetMsgType(record.type))
     }
   }
   
