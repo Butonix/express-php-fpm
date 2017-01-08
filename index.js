@@ -121,11 +121,9 @@ class Connection {
     
     while(this.buffer.length) {
       const record = FCGI.ParseHeader(this.buffer)
-      if(record.recordLength > this.buffer.length) { break }
+      if(!record) { break }
       
-      record.content = this.buffer.slice(8, 8 + record.contentLength)
       this.record(record)
-      
       this.buffer = this.buffer.slice(record.recordLength)
     }
   }
