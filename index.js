@@ -128,7 +128,7 @@ class Connection {
   }
   
   record(record) {
-    debug('got ' + FCGI.GetMsgType(record.type))
+    debug('got %s', FCGI.GetMsgType(record.type))
     
     switch(record.type) {
       case FCGI.MSG.END_REQUEST:
