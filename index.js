@@ -90,7 +90,6 @@ class Connection {
     // socket
     this.socket = net.connect(opt.connectOptions)
     this.socket.on('data', this.data.bind(this))
-    //socket.on('close', onClose)
     
     // send req
     this.send(FCGI.MSG.BEGIN_REQUEST, FCGI.BeginRequestBody(FCGI.ROLE.RESPONDER, 0))
