@@ -83,17 +83,6 @@ class Responder {
     this.send(FCGI.MSG.STDIN, Buffer.alloc(0))
   }
   
-  onClose(hadError) {
-    this.handler.freeUpReqId(this.reqId)
-    if(hadError && !this.gotHead) {
-      this.onError(new Error('Couldn\'t connect to php-fpm server'))
-    }
-  }
-  
-  onError(e) {
-    this.next(e)
-  }
-  
   send(msgType, content) {
     debug('send %s', FCGI.GetMsgType(msgType))
     
@@ -115,6 +104,17 @@ class Responder {
       this.buffer = this.buffer.slice(record.recordLength)
       this.record(record)
     }
+  }
+  
+  onClose(hadError) {
+    this.handler.freeUpReqId(this.reqId)
+    if(hadError && !this.gotHead) {
+      this.onError(new Error('Couldn\'t connect to php-fpm server'))
+    }
+  }
+  
+  onError(e) {
+    this.next(e)
   }
   
   record(record) {
