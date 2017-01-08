@@ -69,9 +69,10 @@ class Handler {
   
   handle(req, res, next) {
     const sep  = req.url.indexOf('?')
-    const file = (sep == -1) ? req.url : req.url.substr(0, sep)
-    const qs   = (sep == -1) ? ''      : req.url.substr(sep + 1)
+    let file = (sep == -1) ? req.url : req.url.substr(0, sep)
+    let qs   = (sep == -1) ? ''      : req.url.substr(sep + 1)
     
+    if(file.endsWith('/')) { file += 'index.php' }
     if(!file.endsWith('.php')) { next(); return }
     
     debug('handle %s', file)
