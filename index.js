@@ -108,9 +108,6 @@ class Responder {
   
   onClose(hadError) {
     this.handler.freeUpReqId(this.reqId)
-    if(hadError && !this.gotHead) {
-      this.onError(new Error('Couldn\'t connect to php-fpm server'))
-    }
   }
   
   onError(e) {
