@@ -15,7 +15,7 @@ How to install php-fpm on
 
 ## Usage & Example
 ```
-npm install pravdomil/express-php-fpm
+npm install express-php-fpm
 ```
 ``` js
 const express = require('express')
