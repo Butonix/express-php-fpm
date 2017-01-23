@@ -47,7 +47,6 @@ class Handler {
   }
 }
 
-
 class Responder extends Client {
   constructor(handler, file, req, res, next) {
     // init sockets
