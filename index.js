@@ -1,6 +1,6 @@
 const express = require('express')
-const net = require('net')
 const FCGI = require('./fcgi')
+const Client = require('./fcgi_client')
 const debug = require('debug')('express-php-fpm')
 
 module.exports = init
@@ -47,24 +47,21 @@ class Handler {
   }
 }
 
-class Responder {
+
+class Responder extends Client {
   constructor(handler, file, req, res, next) {
+    // init sockets
+    super(handler.opt.socketOptions)
+    
     // locals
     this.handler = handler
     this.res = res
     this.next = next
     this.reqId = handler.getFreeReqId()
-    this.buffer = Buffer.alloc(0)
     this.gotHead = false
     
     // debug
     debug('new Responder %i for %s', this.reqId, file)
-    
-    // socket
-    this.socket = net.connect(handler.opt.socketOptions)
-    this.socket.on('data', this.onData.bind(this))
-    this.socket.on('close', this.onClose.bind(this))
-    this.socket.on('error', this.onError.bind(this))
     
     // send req
     const env = createEnviroment(handler.opt.documentRoot, file, req, handler.opt.env)
@@ -83,29 +80,6 @@ class Responder {
     this.send(FCGI.MSG.STDIN, Buffer.alloc(0))
   }
   
-  send(msgType, content) {
-    debug('send %s', FCGI.GetMsgType(msgType))
-    
-    for(let offset = 0; offset < content.length || offset == 0; offset += 0xFFFF) {
-      const chunk = content.slice(offset, offset + 0xFFFF)
-      const header = FCGI.Header(FCGI.VERSION_1, msgType, this.reqId, chunk.length, 0)
-      this.socket.write(header)
-      this.socket.write(chunk)
-    }
-  }
-  
-  onData(data) {
-    this.buffer = Buffer.concat([ this.buffer, data ])
-    
-    while(this.buffer.length) {
-      const record = FCGI.ParseHeader(this.buffer)
-      if(!record) { break }
-      
-      this.buffer = this.buffer.slice(record.recordLength)
-      this.record(record)
-    }
-  }
-  
   onError(e) {
     this.next(e)
   }
@@ -114,7 +88,12 @@ class Responder {
     this.handler.freeUpReqId(this.reqId)
   }
   
-  record(record) {
+  send(msgType, content) {
+    debug('send %s', FCGI.GetMsgType(msgType))
+    super.send(msgType, content)
+  }
+  
+  got(record) {
     debug('got %s', FCGI.GetMsgType(record.type))
     
     switch(record.type) {
