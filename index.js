@@ -61,7 +61,7 @@ class Responder extends Client {
     this.gotHead = false
     
     // debug
-    debug('new Responder %i for %s', this.reqId, file)
+    debug('new Responder %d for %s', this.reqId, file)
     
     // send req
     const env = createEnviroment(handler.opt.documentRoot, file, req, handler.opt.env)
