@@ -18,6 +18,7 @@ class Handler {
     this.connections = new Array(100)
     this.router = express.Router()
     
+    // router
     this.router.use(this.handle.bind(this))
     this.router.use(express.static(opt.documentRoot))
   }
