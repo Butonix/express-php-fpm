@@ -4,6 +4,10 @@
   "description": "Express middleware for php-fpm",
   "main": "index.js",
   "author": "pravdomil.cz",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pravdomil/express-php-fpm.git"
+  },
   "dependencies": {
     "debug": "^2.6.0",
     "express": "^4.14.0"
