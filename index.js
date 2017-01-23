@@ -106,12 +106,12 @@ class Responder {
     }
   }
   
-  onClose(hadError) {
-    this.handler.freeUpReqId(this.reqId)
-  }
-  
   onError(e) {
     this.next(e)
+  }
+  
+  onClose(hadError) {
+    this.handler.freeUpReqId(this.reqId)
   }
   
   record(record) {
