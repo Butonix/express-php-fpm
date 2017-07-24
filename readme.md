@@ -42,5 +42,5 @@ app.listen(3000)
 ```
 
 ## Author
-Software was created in January 2017 by [Pravdomil.cz](http://pravdomil.cz).
+Software was created in January 2017 by [Pravdomil.com](https://pravdomil.com).
 You can [buy a beer for him](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BCL2X3AFQBAP2&item_name=express-php-fpm%20Beer).
