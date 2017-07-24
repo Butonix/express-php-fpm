@@ -3,7 +3,7 @@
   "version": "0.0.31",
   "description": "Express middleware for php-fpm",
   "main": "index.js",
-  "author": "pravdomil.cz",
+  "author": "pravdomil.com",
   "repository": {
     "type": "git",
     "url": "https://github.com/pravdomil/express-php-fpm.git"
