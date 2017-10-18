@@ -127,11 +127,9 @@ class Responder extends Client {
         this.res.status(parseInt(hval.substr(0, 3)))
         continue
       }
-      if(!(hkey in headers)) { headers[hkey] = [] }
-      headers[hkey].push(hval)
+      this.res.append(hkey, hval)
     }
     
-    this.res.set(headers)
     this.res.write(body)
   }
 }
