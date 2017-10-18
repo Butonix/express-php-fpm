@@ -16,8 +16,8 @@ How to install php-fpm on
 [<img src="https://i.imgur.com/NuBnRsT.jpg" alt="how to video" width="560" height="315"/>](http://youtu.be/gqKaZO9epHM)
 
 ## Usage & Example
-```
-npm install express-php-fpm
+``` bash
+npm i express-php-fpm
 ```
 ``` js
 const express = require('express')
